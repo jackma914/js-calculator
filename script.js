@@ -24,18 +24,45 @@ class Calculator {
   }
 
   chooseOperation(operation) {
+    if (this.currentOperand === "") return;
+    if (this.previousOperand !== "") {
+      this.compute();
+    }
     //기능 출력 함수
     this.operation = operation;
     this.previousOperand = this.currentOperand;
     this.currentOperand = "";
   }
 
-  compute() {}
+  compute() {
+    let comoutation;
+    const prev = parseFloat(this.previousOperand);
+    const current = parseFloat(this.currentOperand);
+    if (isNaN(prev) || isNaN(current)) return;
+    switch (this.operation) {
+      case "+":
+        comoutation = prev + current;
+        break;
+      case "-":
+        comoutation = prev - current;
+        break;
+      case "*":
+        comoutation = prev * current;
+        break;
+      case "%":
+        comoutation = prev / current;
+        break;
+      default:
+        return;
+    }
+    this.currentOperand = comoutation;
+    this.operation = undefined;
+    this.previousOperand = "";
+  }
 
   updateDisplay() {
     this.currentOperandTextElement.innerText = this.currentOperand;
     this.previousOperandTextElement.innerText = this.previousOperand;
-    this.currentOperandTextElement.innerText = this.currentOperand;
   }
 }
 
@@ -70,4 +97,14 @@ operationButtons.forEach((button) => {
     calculator.chooseOperation(button.innerText);
     calculator.updateDisplay();
   });
+});
+
+equalsButton.addEventListener("click", (button) => {
+  calculator.compute();
+  calculator.updateDisplay();
+});
+
+allClearButton.addEventListener("click", (button) => {
+  calculator.clear();
+  calculator.updateDisplay();
 });
