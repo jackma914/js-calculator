@@ -14,6 +14,7 @@ class Calculator {
 
   delete() {
     //del 버튼
+    this.currentOperand = this.currentOperand.toString().slice(0, -1);
   }
 
   appendNumber(number) {
@@ -38,7 +39,7 @@ class Calculator {
     let comoutation;
     const prev = parseFloat(this.previousOperand);
     const current = parseFloat(this.currentOperand);
-    if (isNaN(prev) || isNaN(current)) return;
+    if (isNaN(prev) || isNaN(current)) retuun;
     switch (this.operation) {
       case "+":
         comoutation = prev + current;
@@ -60,9 +61,37 @@ class Calculator {
     this.previousOperand = "";
   }
 
+  getDisplayNumber(number) {
+    const stringNumber = number.toString();
+    const integerDigits = parseFloat(stringNumber.split(".")[0]);
+    const decimalDigits = stringNumber.split(".")[1];
+    const floatNumber = parseFloat(number);
+    let integerDisplay;
+    if (isNaN(integerDigits)) {
+      integerDisplay = "";
+    } else {
+      integerDisplay = integerDigits.toLocaleString("en", {
+        maximumFranctionDigits: 0,
+      });
+    }
+    if (decimalDigits != null) {
+      return `${integerDisplay}.${decimalDigits}`;
+    } else {
+      return integerDisplay;
+    }
+  }
+
   updateDisplay() {
-    this.currentOperandTextElement.innerText = this.currentOperand;
-    this.previousOperandTextElement.innerText = this.previousOperand;
+    this.currentOperandTextElement.innerText = this.getDisplayNumber(
+      this.currentOperand
+    );
+    if (this.opration != null) {
+      this.previousOperandTextElement.innerText = `${this.getDisplayNumber(
+        this.previousOperand
+      )}${this.opration}`;
+    } else {
+      this.previousOperandTextElement.innerText = "";
+    }
   }
 }
 
@@ -106,5 +135,10 @@ equalsButton.addEventListener("click", (button) => {
 
 allClearButton.addEventListener("click", (button) => {
   calculator.clear();
+  calculator.updateDisplay();
+});
+
+deleteButton.addEventListener("click", (button) => {
+  calculator.delete();
   calculator.updateDisplay();
 });
